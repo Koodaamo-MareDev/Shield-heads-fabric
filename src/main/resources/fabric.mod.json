@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "shield-heads",
+	"version": "${version}",
+	"name": "Shield Heads",
+	"description": "This mod adds new client side visual effect that allows a player head to be displayed on a shield.",
+	"authors": [
+		"Koodaamo dev community"
+	],
+	"contact": {
+		"homepage": "https://github.com/Koodaamo-MareDev",
+		"sources": "https://github.com/Koodaamo-MareDev/Shield-heads-fabric"
+	},
+	"icon": "assets/shield-heads/icon.png",
+	"environment": "client",
+	"mixins": [
+		{
+			"config": "shield-heads.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21.6",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
