@@ -50,13 +50,13 @@ public class MixinShieldModelRenderer {
 				MinecraftClient client = MinecraftClient.getInstance();
 				PlayerSkinProvider skinProvider = client.getSkinProvider();
 				skinProvider.fetchSkinTextures(profile).getNow(Optional.empty()).ifPresent((skinTextures) -> {
-					renderFaceOverlayOnShield(matrixStack, vertexConsumerProvider, light, skinTextures.texture());
+					renderFaceOverlayOnShield(matrixStack, vertexConsumerProvider, light, overlay, skinTextures.texture());
 				});
 			});
 		}
 	}
 
-	private void renderFaceOverlayOnShield(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, Identifier skinTexture) {
+	private void renderFaceOverlayOnShield(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Identifier skinTexture) {
 		VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(skinTexture));
 
 		matrices.push();
@@ -82,16 +82,16 @@ public class MixinShieldModelRenderer {
 		float maxV = 16f / 64f;
 
 		// Lower-left
-		vc.vertex(matrix, xOffset, yOffset, 0.0f).color(255, 255, 255, 255).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0, 0, 1);
+		vc.vertex(matrix, xOffset, yOffset, 0.0f).color(255, 255, 255, 255).texture(minU, maxV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
 
 		// Lower-right
-		vc.vertex(matrix, xOffset + width, yOffset, 0.0f).color(255, 255, 255, 255).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0, 0, 1);
+		vc.vertex(matrix, xOffset + width, yOffset, 0.0f).color(255, 255, 255, 255).texture(maxU, maxV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
 
 		// Upper-right
-		vc.vertex(matrix, xOffset + width, yOffset + height, 0.0f).color(255, 255, 255, 255).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0, 0, 1);
+		vc.vertex(matrix, xOffset + width, yOffset + height, 0.0f).color(255, 255, 255, 255).texture(maxU, minV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
 
 		// Upper-left
-		vc.vertex(matrix, xOffset, yOffset + height, 0.0f).color(255, 255, 255, 255).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0, 0, 1);
+		vc.vertex(matrix, xOffset, yOffset + height, 0.0f).color(255, 255, 255, 255).texture(minU, minV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
 
 		matrices.pop();
 	}
