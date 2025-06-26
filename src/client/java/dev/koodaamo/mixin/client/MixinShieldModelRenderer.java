@@ -27,7 +27,7 @@ import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.Identifier;
 
 @Mixin(ShieldModelRenderer.class)
-public class MixinItemRenderer {
+public class MixinShieldModelRenderer {
 
 	@Inject(method = "render", at = @At("TAIL"), cancellable = true)
 	public void render(@Nullable ComponentMap componentMap, ItemDisplayContext itemDisplayContext, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay, boolean bl, CallbackInfo ci) {

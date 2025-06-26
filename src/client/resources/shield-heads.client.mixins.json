@@ -3,7 +3,7 @@
 	"package": "dev.koodaamo.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"MixinItemRenderer"
+		"MixinShieldModelRenderer"
 	],
 	"injectors": {
 		"defaultRequire": 1
