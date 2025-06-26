@@ -57,23 +57,12 @@ public class MixinShieldModelRenderer {
 	}
 
 	private void renderFaceOverlayOnShield(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Identifier skinTexture) {
-		VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(skinTexture));
-
 		matrices.push();
 
-		// Shield is 12 pixels wide with 1 pixel off each edge. So make the width and height be 10 pixels.
-		float width = 10.0f / 16.0f;
-		float height = 10.0f / 16.0f;
-
-		float xOffset = -width / 2.0f;
-		float yOffset = -height / 2.0f;
-
 		// Offset by 0.125 to be aligned with the shield's front face
-		// Have to add a small (0.001) Z offset to avoid z-fighting
-		matrices.translate(0.0, 0.0, 0.126);
+		matrices.translate(0.0, 0.0, 0.125);
 
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f matrix = entry.getPositionMatrix();
 
 		// Position of player's face on the texture (8, 8 -> 16, 16)
 		float minU = 8f / 64f;
@@ -81,19 +70,44 @@ public class MixinShieldModelRenderer {
 		float minV = 8f / 64f;
 		float maxV = 16f / 64f;
 
-		// Lower-left
-		vc.vertex(matrix, xOffset, yOffset, 0.0f).color(255, 255, 255, 255).texture(minU, maxV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+		// Prevent z-fighting using a tiny offset
+		matrices.translate(0.0, 0.0, 0.0005);
 
-		// Lower-right
-		vc.vertex(matrix, xOffset + width, yOffset, 0.0f).color(255, 255, 255, 255).texture(maxU, maxV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+		renderFace(vertexConsumers.getBuffer(RenderLayer.getEntityCutout(skinTexture)), entry, minU, minV, maxU, maxV, light, overlay);
 
-		// Upper-right
-		vc.vertex(matrix, xOffset + width, yOffset + height, 0.0f).color(255, 255, 255, 255).texture(maxU, minV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+		// Position of the hat layer is (40, 8 -> 48, 16);
+		minU = 40f / 64f;
+		maxU = 48f / 64f;
 
-		// Upper-left
-		vc.vertex(matrix, xOffset, yOffset + height, 0.0f).color(255, 255, 255, 255).texture(minU, minV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+		// Add another tiny offset for the hat layer
+		matrices.translate(0.0, 0.0, 0.0005);
+
+		renderFace(vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(skinTexture)), entry, minU, minV, maxU, maxV, light, overlay);
 
 		matrices.pop();
+	}
+
+	private void renderFace(VertexConsumer vc, MatrixStack.Entry entry, float minU, float minV, float maxU, float maxV, int light, int overlay) {
+
+		// Shield is 12 pixels wide with 1 pixel off each edge. So make the width and height be 10 pixels.
+		float length = 10.0f / 16.0f;
+
+		float offset = -length / 2.0f;
+
+		Matrix4f matrix = entry.getPositionMatrix();
+
+		// Lower-left
+		vc.vertex(matrix, offset, offset, 0.0f).color(255, 255, 255, 255).texture(minU, maxV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+
+		// Lower-right
+		vc.vertex(matrix, offset + length, offset, 0.0f).color(255, 255, 255, 255).texture(maxU, maxV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+
+		// Upper-right
+		vc.vertex(matrix, offset + length, offset + length, 0.0f).color(255, 255, 255, 255).texture(maxU, minV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+
+		// Upper-left
+		vc.vertex(matrix, offset, offset + length, 0.0f).color(255, 255, 255, 255).texture(minU, minV).overlay(overlay).light(light).normal(entry, 0, 0, 1);
+
 	}
 
 }
